@@ -1,0 +1,38 @@
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+
+# IntelliJ project files
+*.iml
+*.iws
+*.ipr
+.idea/
+.settings/
+
+# Maven build folder
+target
+
+# Mac HFS+ files
+.DS_Store
+
+# Unix editor backup files
+*~
+*.swp
+
+# Gradle files
+.gradle/
+build/
+/*/build/
+.classpath
+.project
+.settings
+.gradle
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log Files
+#.log

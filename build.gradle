@@ -1,0 +1,81 @@
+group = 'com.clover.sdk'
+version = '1.3.1'
+
+apply plugin: 'java'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+apply plugin: 'idea'
+apply plugin: 'maven'
+
+if (!JavaVersion.current().java7Compatible) {
+  throw new IllegalStateException("Must be built with Java 7 or higher")
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+subprojects {
+  group = 'com.clover.sdk.remote'
+  version = '1.1.1-RC1'
+
+  apply plugin: 'java'
+  sourceCompatibility = 1.7
+  targetCompatibility = 1.7
+  apply plugin: 'idea'
+
+  if (!JavaVersion.current().java7Compatible) {
+    throw new IllegalStateException("Must be built with Java 7 or higher")
+  }
+
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
+
+  dependencies {
+    testCompile "junit:junit:4.12"
+    testCompile "org.assertj:assertj-core:1.7.0"
+  }
+}
+
+jar {
+  subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
+  task allJar(type: Jar, dependsOn: subprojects.tasks["build"]) {
+    subprojects.each { subproject ->
+      from subproject.configurations.archives.allArtifacts.files.collect {
+        zipTree(it)
+      }
+    }
+  }
+  manifest {
+    attributes "Specification-Title": "Clover Java SDK Classes", "com/clover/remote/client"
+    attributes "Specification-Version": "1.1.1", "com/clover/remote/client"
+    attributes "Specification-Vendor": "Clover Network, Inc.", "com/clover/remote/client"
+    attributes "Implementation-Title": "com.clover.remote.java.sdk", "com/clover/remote/client"
+    attributes "Implementation-Version": "build02", "com/clover/remote/client"
+    attributes "Implementation-Vendor": "Clover Network, Inc.", "com/clover/remote/client"
+  }
+}
+
+artifacts {
+  archives allJar
+}
+
+/*install {
+  repositories.mavenInstaller {
+    // only necessary if artifact ID diverges from project name
+    // the latter defaults to project directory name and can be
+    // configured in settings.gradle
+    // pom.artifactId = 'clover-java-sdk'
+    // shouldn't be needed as this is the default anyway
+    // pom.packaging = 'jar'
+    // pom.version = '1.0-SNAPSHOT'
+  }
+}*/
+
+dependencies {
+
+}
+

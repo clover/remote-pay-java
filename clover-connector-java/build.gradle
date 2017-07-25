@@ -36,14 +36,14 @@ configurations {
 }
 
 dependencies {
-  compile(name: 'clover-remote-interface-204', ext: 'jar')
-  compile(name: 'clover-android-sdk-177', ext: 'jar')
+  compile(name: 'clover-remote-interface-205.3', ext: 'jar')
+  compile(name: 'clover-android-sdk-178.2', ext: 'jar')
   compile project(':org-json')
   compile 'com.google.code.gson:gson:2.3.1'
   compile 'net.straylightlabs:hola:0.2.2'
   compile 'com.neovisionaries:nv-websocket-client:1.31'
-  libCopy 'com.clover:clover-remote-interface:204-SNAPSHOT'
-  libCopy 'com.clover.sdk:clover-android-sdk:177-SNAPSHOT'
+  libCopy 'com.clover:clover-remote-interface:205.3'
+  libCopy 'com.clover.sdk:clover-android-sdk:178.2'
 }
 
 task copySource << {

@@ -105,7 +105,7 @@ import java.util.Map;
 
 public class DefaultCloverDevice extends CloverDevice implements ICloverTransportObserver {
   private static final String TAG = DefaultCloverDevice.class.getName();
-  private static final String REMOTE_SDK = "com.clover.cloverconnector.java:1.3.1-Public";
+  private static final String REMOTE_SDK = "com.clover.cloverconnector.java:1.3.2-Public";
 
   private Gson gson = new Gson();
   private static int id = 0;

@@ -22,7 +22,8 @@ import com.clover.sdk.v3.payments.Payment;
 import com.clover.sdk.v3.payments.Result;
 
 /**
- * Base response use for callbacks that contain payments - Sale, Auth, and PreAuth
+ * Base reponse use for callbacks that contain
+ * payments. Sale, Auth & PreAuth
  */
 @SuppressWarnings(value="unused")
 public class PaymentResponse extends BaseResponse {
@@ -67,9 +68,13 @@ public class PaymentResponse extends BaseResponse {
    * @return true if processed as a sale
    */
   public boolean isSale() {
-    return CardTransactionType.AUTH.equals(payment.getCardTransaction().getType()) &&
-           Result.SUCCESS.equals(payment.getResult());
-  }
+    if (payment != null && payment.getCardTransaction() != null) {
+      return CardTransactionType.AUTH.equals(payment.getCardTransaction().getType()) &&
+             Result.SUCCESS.equals(payment.getResult());
+    } else {
+      return false;
+    }
+  }  
 
   /**
    * Check to see if the payment was processed as an auth
@@ -77,8 +82,12 @@ public class PaymentResponse extends BaseResponse {
    * @return true if processed as an auth
    */
   public boolean isAuth() {
-    return CardTransactionType.PREAUTH.equals(payment.getCardTransaction().getType()) &&
-           Result.SUCCESS.equals(payment.getResult());
+    if (payment != null && payment.getCardTransaction() != null) {
+      return CardTransactionType.PREAUTH.equals(payment.getCardTransaction().getType()) &&
+             Result.SUCCESS.equals(payment.getResult());
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -87,9 +96,14 @@ public class PaymentResponse extends BaseResponse {
    * @return true if processed as a pre-auth
    */
   public boolean isPreAuth() {
-    return CardTransactionType.PREAUTH.equals(payment.getCardTransaction().getType()) &&
-           Result.AUTH.equals(payment.getResult());
+    if (payment != null && payment.getCardTransaction() != null) {
+      return CardTransactionType.PREAUTH.equals(payment.getCardTransaction().getType()) &&
+             Result.AUTH.equals(payment.getResult());
+    } else {
+      return false;
+    }
   }
+
   /**
    * Set the field value
    *

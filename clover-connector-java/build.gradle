@@ -1,5 +1,3 @@
-import java.util.regex.Pattern
-
 apply plugin: 'java'
 
 compileJava {
@@ -31,83 +29,12 @@ sourceSets {
   }
 }
 
-configurations {
-  libCopy
-}
-
 dependencies {
   compile(name: 'clover-remote-interface-205.3', ext: 'jar')
-  compile(name: 'clover-android-sdk-178.2', ext: 'jar')
+  compile(name: 'clover-android-sdk-178.3', ext: 'jar')
   compile project(':org-json')
   compile 'com.google.code.gson:gson:2.3.1'
   compile 'net.straylightlabs:hola:0.2.2'
   compile 'com.neovisionaries:nv-websocket-client:1.31'
-  libCopy 'com.clover:clover-remote-interface:205.3'
-  libCopy 'com.clover.sdk:clover-android-sdk:178.2'
 }
 
-task copySource << {
-  copy {
-    from '../../remote-pay-android/remote-pay-android-connector/src/main/java/com/clover/remote/client/'
-    into 'src/main/java/com/clover/remote/client/'
-    exclude '**/USBCloverDeviceConfiguration.java'
-    exclude '**/usb'
-    filter { line ->
-      line.replaceAll("com.clover.cloverconnector.android:", "com.clover.cloverconnector.java:")
-    }
-  }
-}
-
-task copyLibs << {
-  def baseDir = new File('../lib')
-  def tmpDir = new File(baseDir.toString() + '/tmp')
-
-  delete baseDir
-
-  copy {
-    from {
-      configurations.getByName('libCopy').collect()
-    }
-    include '**/*.aar'
-    into tmpDir
-  }
-
-  tmpDir.listFiles().collect {
-    def source = it
-//    def regex = Pattern.compile('-\\d+-SNAPSHOT.aar')
-    def regex = Pattern.compile('-SNAPSHOT.aar')
-    def matched = regex.matcher(source.getName()).find()
-    if (matched) {
-      def newName = regex.matcher(source.getName()).replaceAll('.jar')
-
-      copy {
-        from zipTree(source)
-        into baseDir
-        include 'classes.jar'
-
-        rename 'classes.jar', newName
-      }
-
-    }
-  }
-  delete tmpDir
-}
-
-task cleanSource << {
-  delete "src/main/java/com"
-}
-
-task replaceSource << {
-  cleanSource.execute()
-  copySource.execute()
-  copyLibs.execute()
-}
-
-// these would enable the source copy to happen for every build
-//compileJava.doFirst {
-//  replaceSource.execute()
-//}
-
-//clean.doFirst() {
-//  cleanSource.execute()
-//}

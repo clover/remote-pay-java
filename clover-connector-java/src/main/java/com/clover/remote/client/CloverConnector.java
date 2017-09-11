@@ -740,7 +740,7 @@ public class CloverConnector implements ICloverConnector {
   @Override
   public void openCashDrawer(String reason) {
     if (device == null || !isReady) {
-      broadcaster.notifyOnDeviceError(new CloverDeviceErrorEvent(CloverDeviceErrorEvent.CloverDeviceErrorType.COMMUNICATION_ERROR, 0, "In displayPaymentReceiptOptions: The Clover device is not connected."));
+      broadcaster.notifyOnDeviceError(new CloverDeviceErrorEvent(CloverDeviceErrorEvent.CloverDeviceErrorType.COMMUNICATION_ERROR, 0, "In openCashDrawer: The Clover device is not connected."));
     } else {
       device.doOpenCashDrawer(reason);
     }
@@ -800,7 +800,7 @@ public class CloverConnector implements ICloverConnector {
   @Override
   public void retrieveDeviceStatus(RetrieveDeviceStatusRequest request) {
     if (device == null || !isReady) {
-      broadcaster.notifyOnDeviceError(new CloverDeviceErrorEvent(CloverDeviceErrorEvent.CloverDeviceErrorType.COMMUNICATION_ERROR, 0, "In resetDevice: The Clover device is not connected."));
+      broadcaster.notifyOnDeviceError(new CloverDeviceErrorEvent(CloverDeviceErrorEvent.CloverDeviceErrorType.COMMUNICATION_ERROR, 0, "In retrieveDeviceStatus: The Clover device is not connected."));
     } else {
       device.doRetrieveDeviceStatus(request.isSendLastMessage());
     }
@@ -809,7 +809,7 @@ public class CloverConnector implements ICloverConnector {
   @Override
   public void retrievePayment(RetrievePaymentRequest request) {
     if (device == null || !isReady) {
-      broadcaster.notifyOnDeviceError(new CloverDeviceErrorEvent(CloverDeviceErrorEvent.CloverDeviceErrorType.COMMUNICATION_ERROR, 0, "In resetDevice: The Clover device is not connected."));
+      broadcaster.notifyOnDeviceError(new CloverDeviceErrorEvent(CloverDeviceErrorEvent.CloverDeviceErrorType.COMMUNICATION_ERROR, 0, "In retrievePayment: The Clover device is not connected."));
     } else {
       device.doRetrievePayment(request.getExternalPaymentId());
     }
@@ -1168,7 +1168,24 @@ public class CloverConnector implements ICloverConnector {
           Log.e(this.getClass().getName(), "The last PaymentRefundResponse has a different refund than this refund in finishOk");
         }
       } else {
-        Log.e(this.getClass().getName(), "Shouldn't get an onFinishOk with having gotten an onPaymentRefund!");
+        Log.w(this.getClass().getName(), "Shouldn't get an onFinishOk without having gotten an onPaymentRefund unless recovering!");
+
+        String orderId = null;
+        String paymentId = null;
+        if (refund != null) {
+          if (refund.getOrderRef() != null) {
+            orderId = refund.getOrderRef().getId();
+          }
+          if (refund.getPayment() != null) {
+            paymentId = refund.getPayment().getId();
+          }
+        }
+
+        RefundPaymentResponse rpr = new RefundPaymentResponse(true, ResultCode.SUCCESS);
+        rpr.setRefund(refund);
+        rpr.setOrderId(orderId);
+        rpr.setPaymentId(paymentId);
+        cloverConnector.broadcaster.notifyOnRefundPaymentResponse(rpr);
       }
     }
 

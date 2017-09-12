@@ -34,7 +34,14 @@ dependencies {
   compile(name: 'clover-android-sdk-178.3', ext: 'jar')
   compile project(':org-json')
   compile 'com.google.code.gson:gson:2.3.1'
-  compile 'net.straylightlabs:hola:0.2.2'
   compile 'com.neovisionaries:nv-websocket-client:1.31'
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+artifacts {
+  archives sourcesJar
+}

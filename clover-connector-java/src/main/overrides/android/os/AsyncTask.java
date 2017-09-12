@@ -1,12 +1,12 @@
 package android.os;
 
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public abstract class AsyncTask<Params, Progress, Result> {
-  Executor executor = Executors.newSingleThreadExecutor();
   public void execute(final Params... args) {
+    final ExecutorService executor = Executors.newSingleThreadExecutor();
     executor.execute(new Runnable() {
       @Override public void run() {
         onPreExecute();
@@ -16,11 +16,11 @@ public abstract class AsyncTask<Params, Progress, Result> {
             executor.execute(new Runnable() {
               @Override public void run() {
                 onPostExecute(result);
+                executor.shutdown();
               }
             });
           }
         });
-
       }
     });
   }

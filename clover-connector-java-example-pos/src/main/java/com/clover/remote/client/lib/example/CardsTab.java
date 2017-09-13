@@ -87,7 +87,7 @@ public class CardsTab extends AbstractExampleTab {
     });
 
     Button authButton = new Button("AUTH");
-    saleButton.setOnAction(event -> {
+    authButton.setOnAction(event -> {
       clearLabel();
 
       VaultedCard vaultedCard = getVaultedCard();

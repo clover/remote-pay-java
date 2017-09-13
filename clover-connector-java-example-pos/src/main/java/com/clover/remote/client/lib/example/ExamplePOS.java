@@ -41,6 +41,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -297,9 +298,11 @@ public class ExamplePOS extends Application {
         });
         comboPlusAddBox.getChildren().addAll(devices, addDeviceButton);
         vBox.getChildren().add(comboPlusAddBox);
+        CheckBox pairCheckbox = new CheckBox("Force Pairing");
         Button connectButton = new Button("Connect");
         BorderPane buttonPane = new BorderPane();
         buttonPane.setRight(connectButton);
+        buttonPane.setLeft(pairCheckbox);
 
         VBox vbox = new VBox();
         vbox.setStyle("-fx-padding: 20px");
@@ -316,14 +319,13 @@ public class ExamplePOS extends Application {
             try {
 
               Object dev = devices.getSelectionModel().getSelectedItem();
-              Device device = null;
-              device = (Device)dev;
+              Device device = (Device) dev;
               URI endpoint = new URI(device.endpoint);
               Preferences preferences = Preferences.userNodeForPackage(ExamplePOS.class);
               preferences.put("LAST_DEVICE", new Gson().toJson(device).toString());
 
               KeyStore trustStore = createTrustStore();
-              String authToken = Preferences.userNodeForPackage(ExamplePOS.class).get("AUTH_TOKEN", null);
+              String authToken = pairCheckbox.isSelected() ? null : Preferences.userNodeForPackage(ExamplePOS.class).get("AUTH_TOKEN", null);
               WebSocketCloverDeviceConfiguration deviceConfiguration = new WebSocketCloverDeviceConfiguration(endpoint, "com.cloverconnector.java.pos:1.1.0", trustStore, "Clover Example POS Java", "Lane4", authToken){
                 @Override public void onPairingCode(final String pairingCode) {
                   displayPairingCode(pairingCode);

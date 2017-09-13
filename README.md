@@ -3,12 +3,12 @@
 
 # Clover Connector for Java POS integration
 
-### Version
+## Version
 Current version: 1.3.2
 
 ## Overview
 
-This SDK allows your Java-based Point-of-Sale (POS) system to communicate with a [Clover® device](https://www.clover.com/pos-hardware/) and process payment transactions. Learn more about [Clover integrations](https://www.clover.com/integrations).
+This SDK allows your Java-based point-of-sale (POS) system to communicate with a [Clover® payment device](https://www.clover.com/pos-hardware/) and process payment transactions. Learn more about [Clover integrations](https://www.clover.com/integrations).
 
 The Java project includes a class library (clover-connector-java) and several examples. One example uses the command line, and another is a PoS application that uses JavaFX. There are also several "getting started" examples. 
 
@@ -29,17 +29,17 @@ To work with the project effectively, you will need:
 4. Start clover-connector-java-example-pos (`com.clover.remote.client.lib.example.ExamplePOS` main class) or clover-connector-java-example-cli and enter the address as displayed on the Clover device.
 5. To start the command-line example, you will need to build it with the command `java -jar clover-connector-java-example-cli-0.1.1-SNAPSHOT.jar` first.
 
-### Working with the Secure Network Pay Display app
+## Working with the Secure Network Pay Display app
 1. Install the Secure Network Pay Display app.
 2. On the command line, type `adb install com.clover.remote.protocol.lan-75.apk`.
 
-#### Uninstalling the Secure Network Pay Display app
+### Uninstalling the Secure Network Pay Display app
 
 To uninstall the Secure Network Pay Display app, enter the following on the command line:
 
 `adb uninstall com.clover.remote.protocol.lan`
 
-#### Killing the Secure Network Pay Display app
+### Killing the Secure Network Pay Display app
 
 To stop the app:
 
@@ -47,7 +47,7 @@ To stop the app:
 2. Next, type `u0_a73    13964 149   731256 46040 ffffffff 400ff6fc S com.clover.remote.protocol.lan`.      
 3. Finally, type `adb shell kill 13964`.
 
-### Working with the SDK
+## Working with the SDK
 
 If you've successfully built and synced the project libaries using Gradle, your IDE shouldn't display any errors when importing or opening the project. Transactions between the device and a Java test app will work through an instance of a CloverConnector object. Instantiating the object will require a configuration scheme, which is usually a webSocket device configuration. The next step is to set up a connection listener. Here is an example:
 
@@ -115,7 +115,7 @@ try {
 }
 ```
 
-### Additional resources
+## Additional resources
 
 * [Release Notes](https://github.com/clover/remote-pay-java/releases)
 * [API Documentation](http://clover.github.io/remote-pay-java/1.3.1/docs/index.html)

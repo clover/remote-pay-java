@@ -25,17 +25,6 @@ repositories {
   }
 }
 
-sourceSets {
-  main {
-    java {
-      srcDirs = ['src/main/java', 'src/main/overrides']
-    }
-    resources {
-      srcDirs = ['src/main/resources']
-    }
-  }
-}
-
 jar {
   from {
     (configurations.runtime).collect {
@@ -50,40 +39,7 @@ jar {
 defaultTasks 'jar'
 
 dependencies {
-  compile project(':clover-connector-java')
-  compile project(':org-json')
+  compile 'com.clover.sdk:remote-pay-java-connector:1.3.2'
   compile 'net.straylightlabs:hola:0.2.2'
-  compile 'com.google.code.gson:gson:2.3.1'
   compile 'org.java-websocket:Java-WebSocket:1.3.0'
 }
-
-task copySource << {
-  copy {
-    from '../../remote-pay-android/remote-pay-android-example-pos/src/main/java/com/clover/remote/client/lib/example/'
-    into 'src/main/java/com/clover/remote/client/lib/example/'
-    include '**/model/*.java'
-    include '**/messages/*.java'
-    include '**/utils/*.java'
-  }
-}
-
-task cleanSource << {
-  delete "src/main/java/com/clover/remote/client/lib/example/model"
-  delete "src/main/java/com/clover/remote/client/lib/example/messages"
-  delete "src/main/java/com/clover/remote/client/lib/example/utils"
-}
-
-task replaceSource << {
-  cleanSource.execute()
-  copySource.execute()
-}
-
-// these would enable the source copy to happen for every build
-//compileJava.doFirst {
-//  replaceSource.execute()
-//}
-
-//clean.doFirst() {
-//  cleanSource.execute()
-//}
-

@@ -1,7 +1,6 @@
 package com.clover.remote.client.transport.websocket;
 
 import android.util.Log;
-import com.neovisionaries.ws.client.OpeningHandshakeException;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketCloseCode;
 import com.neovisionaries.ws.client.WebSocketException;
@@ -12,7 +11,6 @@ import com.neovisionaries.ws.client.WebSocketState;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.IOException;
 import java.net.URI;
 import java.security.KeyStore;
 import java.util.List;
@@ -23,7 +21,7 @@ public class CloverNVWebSocketClient implements WebSocketListener {
   private static final int MISSED_PONG = 4001;
 
   private final URI endpoint;
-  CloverNVWebSocketClientListener listener;
+  private final CloverNVWebSocketClientListener listener;
   private WebSocketFactory factory;
   private WebSocket socket;
   private volatile boolean notifyClose;
@@ -196,6 +194,10 @@ public class CloverNVWebSocketClient implements WebSocketListener {
   }
 
   public void disconnect() {
+    socket.disconnect(1000, null, 0);
+  }
+
+  public void disconnectMissedPong() {
     socket.disconnect(MISSED_PONG, "Missed pong", 0);
   }
 

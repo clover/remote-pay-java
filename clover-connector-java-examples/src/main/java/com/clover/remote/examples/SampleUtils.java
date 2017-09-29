@@ -28,7 +28,7 @@ public class SampleUtils {
   private static final SecureRandom random = new SecureRandom();
   private static final char[] vals = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}; // Crockford's base 32 chars
 
-  private static final String APP_ID = "com.cloverconnector.java.simple.sample:1.3.2";
+  private static final String APP_ID = "com.cloverconnector.java.simple.sample:1.3.3";
   private static final String POS_NAME = "Clover Simple Sample Java";
   private static final String DEVICE_NAME = "Clover Device";
 

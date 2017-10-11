@@ -40,6 +40,7 @@ defaultTasks 'jar'
 
 dependencies {
   compile 'com.clover.sdk:remote-pay-java-connector:1.3.3'
+  compile 'org.json:json:20170516'
   compile 'net.straylightlabs:hola:0.2.2'
   compile 'org.java-websocket:Java-WebSocket:1.3.0'
 }

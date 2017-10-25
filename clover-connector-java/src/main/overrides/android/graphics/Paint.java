@@ -4,16 +4,6 @@
 //
 
 package android.graphics;
-
-import android.graphics.ColorFilter;
-import android.graphics.MaskFilter;
-import android.graphics.Path;
-import android.graphics.PathEffect;
-import android.graphics.Rasterizer;
-import android.graphics.Rect;
-import android.graphics.Shader;
-import android.graphics.Typeface;
-import android.graphics.Xfermode;
 import java.util.Locale;
 
 public class Paint {

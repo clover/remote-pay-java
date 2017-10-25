@@ -30,8 +30,8 @@ sourceSets {
 }
 
 dependencies {
-  compile(name: 'clover-remote-interface-205.3', ext: 'jar')
-  compile(name: 'clover-android-sdk-178.3', ext: 'jar')
+  compile(name: 'clover-remote-interface-210', ext: 'jar')
+  compile(name: 'clover-android-sdk-183', ext: 'jar')
   compile 'org.json:json:20170516'
   compile 'com.google.code.gson:gson:2.3.1'
   compile 'com.neovisionaries:nv-websocket-client:1.31'

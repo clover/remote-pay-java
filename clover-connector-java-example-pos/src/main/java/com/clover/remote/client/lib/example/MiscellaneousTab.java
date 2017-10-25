@@ -17,19 +17,29 @@
 package com.clover.remote.client.lib.example;
 
 import com.clover.remote.client.CloverConnector;
+import com.clover.remote.client.DefaultCloverConnectorListener;
 import com.clover.remote.client.lib.example.messages.ConversationQuestionMessage;
 import com.clover.remote.client.lib.example.model.POSStore;
 import com.clover.remote.client.messages.CloseoutRequest;
+import com.clover.remote.client.messages.ConfirmPaymentRequest;
 import com.clover.remote.client.messages.CustomActivityRequest;
 import com.clover.remote.client.messages.MessageToActivity;
+import com.clover.remote.client.messages.OpenCashDrawerRequest;
+import com.clover.remote.client.messages.PrintJobStatusRequest;
+import com.clover.remote.client.messages.PrintRequest;
 import com.clover.remote.client.messages.ReadCardDataRequest;
 import com.clover.remote.client.messages.RetrieveDeviceStatusRequest;
 import com.clover.remote.client.messages.RetrievePaymentRequest;
+import com.clover.remote.client.messages.RetrievePrintersRequest;
+import com.clover.remote.client.messages.RetrievePrintersResponse;
 import com.clover.remote.client.messages.SaleRequest;
 import com.clover.sdk.v3.payments.DataEntryLocation;
+import com.clover.sdk.v3.printer.Printer;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.event.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -37,6 +47,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
@@ -62,12 +73,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class MiscellaneousTab extends AbstractExampleTab {
+
+  private TextField queryPrintJobTextField;
 
   private enum CustomActivity {
     BASIC("BasicExample", false),
@@ -152,20 +166,90 @@ public class MiscellaneousTab extends AbstractExampleTab {
     printTextArea.setWrapText(true);
     inputPane.add(printTextArea, 0, 1);
 
-    Button printTextButton = new Button("PRINT TEXT");
-    printTextButton.setOnAction(event -> {
-      clearLabel();
-      List<String> printLines;
-      String[] lines = printTextArea.getText().split("\n");
-      if (lines.length == 1 && lines[0].isEmpty()) {
-        printLines = Collections.singletonList("<<Empty Print Text>>");
-      } else {
-        printLines = Arrays.asList(lines);
+    // Print Text
+    {
+        MenuItem defaultPrinter = new MenuItem("Default Printer");
+        defaultPrinter.setOnAction(event -> {
+          clearLabel();
+
+          List<String> printLines;
+          String[] lines = printTextArea.getText().split("\n");
+          if (lines.length == 1 && lines[0].isEmpty()) {
+            printLines = Collections.singletonList("<<Empty Print Text>>");
+          } else {
+            printLines = Arrays.asList(lines);
+          }
+
+          printTextToPrinter(printLines, null);
+        });
+        MenuItem loadingMenuItem = new MenuItem("Loading Printers...");
+
+        SplitMenuButton printTextButton = new SplitMenuButton(defaultPrinter, loadingMenuItem);
+        printTextButton.showingProperty().addListener(new ChangeListener<Boolean>() {
+          @Override public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            System.out.println("it opened...");
+            if(!oldValue && newValue) {
+
+              cloverConnector.addCloverConnectorListener(new DefaultCloverConnectorListener(cloverConnector) {
+                @Override public void onConfirmPaymentRequest(ConfirmPaymentRequest request) {
+                  // do nothing here...
+                }
+
+                @Override public void onRetrievePrintersResponse(RetrievePrintersResponse response) {
+                  cloverConnector.removeCloverConnectorListener(this);
+
+                  Platform.runLater(new Runnable(){
+                    @Override public void run() {
+                      printTextButton.getItems().remove(loadingMenuItem);
+                      for(Printer p : response.getPrinters()) {
+                        MenuItem mi = new MenuItem(p.getName() + ":" + p.getId());
+                        mi.setOnAction(event -> {
+                          clearLabel();
+
+                          List<String> printLines;
+                          String[] lines = printTextArea.getText().split("\n");
+                          if (lines.length == 1 && lines[0].isEmpty()) {
+                            printLines = Collections.singletonList("<<Empty Print Text>>");
+                          } else {
+                            printLines = Arrays.asList(lines);
+                          }
+
+                          printTextToPrinter(printLines, p.getId());
+                        });
+                        printTextButton.getItems().add(mi);
+                      }
+                    }
+                  });
+                }
+              });
+              cloverConnector.retrievePrinters(new RetrievePrintersRequest(null));
+            } else {
+              Platform.runLater(new Runnable(){
+                @Override public void run() {
+                  printTextButton.getItems().clear();
+                  printTextButton.getItems().add(defaultPrinter);
+                  printTextButton.getItems().add(loadingMenuItem);
+                }
+              });
+            }
+          }
+        });
+        printTextButton.setText("PRINT TEXT");
+        printTextButton.setOnAction(event -> {
+          clearLabel();
+          List<String> printLines;
+          String[] lines = printTextArea.getText().split("\n");
+          if (lines.length == 1 && lines[0].isEmpty()) {
+            printLines = Collections.singletonList("<<Empty Print Text>>");
+          } else {
+            printLines = Arrays.asList(lines);
+          }
+          cloverConnector.printText(printLines);
+        });
+
+        inputPane.add(printTextButton, 1, 1);
+        fillJavaFxGrid(printTextButton);
       }
-      cloverConnector.printText(printLines);
-    });
-    inputPane.add(printTextButton, 1, 1);
-    fillJavaFxGrid(printTextButton);
 
     // Query Payment
     TextField queryPaymentTextField = new TextField("JANRZXDFTF3JF");
@@ -181,7 +265,38 @@ public class MiscellaneousTab extends AbstractExampleTab {
     inputPane.add(queryPaymentButton, 1, 2);
     fillJavaFxGrid(queryPaymentButton);
 
+
+    // Query Print Job
+    queryPrintJobTextField = new TextField("");
+    queryPrintJobTextField.setPrefHeight(10);
+    queryPrintJobTextField.setPrefWidth(60);
+    inputPane.add(queryPrintJobTextField, 0, 3);
+
+    Button queryPrintJobButton = new Button("QUERY PRINT JOB");
+    queryPrintJobButton.setOnAction(event -> {
+      clearLabel();
+      cloverConnector.retrievePrintJobStatus(new PrintJobStatusRequest(queryPrintJobTextField.getText()));
+    });
+    inputPane.add(queryPrintJobButton, 1, 3);
+    fillJavaFxGrid(queryPrintJobButton);
+
     return inputPane;
+  }
+
+  private void printTextToPrinter(List<String> printLines, String printerId) {
+    PrintRequest pr = new PrintRequest(printLines);
+    pr.setPrintRequestId(UUID.randomUUID().toString());
+    pr.setPrintDeviceId(printerId);
+    queryPrintJobTextField.setText(pr.getPrintRequestId());
+    cloverConnector.print(pr);
+  }
+
+  private void printImageURLToPrinter( String url, String printerId) {
+    PrintRequest pr = new PrintRequest(url);
+    pr.setPrintDeviceId(null);
+    pr.setPrintRequestId(UUID.randomUUID().toString());
+    queryPrintJobTextField.setText(pr.getPrintRequestId());
+    cloverConnector.print(pr);
   }
 
   private Pane buildControlPane() {
@@ -220,13 +335,68 @@ public class MiscellaneousTab extends AbstractExampleTab {
     controlPane.add(cancelButton, 0, 1);
     fillJavaFxGrid(cancelButton);
 
-    Button openCashDrawerButton = new Button("OPEN CASH DRAWER");
-    openCashDrawerButton.setOnAction(event -> {
-      clearLabel();
-      cloverConnector.openCashDrawer("Test");
-    });
-    controlPane.add(openCashDrawerButton, 1, 1);
-    fillJavaFxGrid(openCashDrawerButton);
+    // PrintImage
+    {
+      MenuItem defaultPrinter = new MenuItem("Default Printer");
+      defaultPrinter.setOnAction(event -> {
+        OpenCashDrawerRequest ocdr = new OpenCashDrawerRequest("Testing");
+        ocdr.setDeviceId(null);
+        cloverConnector.openCashDrawer(ocdr);
+      });
+      MenuItem loadingMenuItem = new MenuItem("Loading Printers...");
+
+      SplitMenuButton openCashDrawerButton = new SplitMenuButton(defaultPrinter, loadingMenuItem);
+      openCashDrawerButton.showingProperty().addListener(new ChangeListener<Boolean>() {
+        @Override public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+          System.out.println("it opened...");
+          if(!oldValue && newValue) {
+
+            cloverConnector.addCloverConnectorListener(new DefaultCloverConnectorListener(cloverConnector) {
+              @Override public void onConfirmPaymentRequest(ConfirmPaymentRequest request) {
+                // do nothing here...
+              }
+
+              @Override public void onRetrievePrintersResponse(RetrievePrintersResponse response) {
+                cloverConnector.removeCloverConnectorListener(this);
+
+                Platform.runLater(new Runnable(){
+                  @Override public void run() {
+                    openCashDrawerButton.getItems().remove(loadingMenuItem);
+                    for(Printer p : response.getPrinters()) {
+                      MenuItem mi = new MenuItem(p.getName() + ":" + p.getId());
+                      mi.setOnAction(event -> {
+                        OpenCashDrawerRequest ocdr = new OpenCashDrawerRequest("Testing");
+                        ocdr.setDeviceId(p.getId());
+                        cloverConnector.openCashDrawer(ocdr);
+                      });
+                      openCashDrawerButton.getItems().add(mi);
+                    }
+                  }
+                });
+              }
+            });
+            cloverConnector.retrievePrinters(new RetrievePrintersRequest(null));
+          } else {
+            Platform.runLater(new Runnable(){
+              @Override public void run() {
+                openCashDrawerButton.getItems().clear();
+                openCashDrawerButton.getItems().add(defaultPrinter);
+                openCashDrawerButton.getItems().add(loadingMenuItem);
+
+              }
+            });
+          }
+        }
+      });
+      openCashDrawerButton.setText("OPEN CASH DRAWER");
+      openCashDrawerButton.setOnAction(event -> {
+        clearLabel();
+        cloverConnector.openCashDrawer("Testing");
+      });
+
+      controlPane.add(openCashDrawerButton, 1, 1);
+      fillJavaFxGrid(openCashDrawerButton);
+    }
 
     Button closeoutButton = new Button("CLOSEOUT ORDERS");
     closeoutButton.setOnAction(event -> {
@@ -239,13 +409,65 @@ public class MiscellaneousTab extends AbstractExampleTab {
     controlPane.add(closeoutButton, 0, 2);
     fillJavaFxGrid(closeoutButton);
 
-    Button printImageButton = new Button("PRINT IMAGE");
-    printImageButton.setOnAction(event -> {
-      clearLabel();
-      cloverConnector.printImageFromURL("https://www.clover.com/assets/images/public-site/press/clover_primary_gray_rgb.png");
-    });
-    controlPane.add(printImageButton, 1, 2);
-    fillJavaFxGrid(printImageButton);
+    // PrintImage
+    {
+      MenuItem defaultPrinter = new MenuItem("Default Printer");
+      defaultPrinter.setOnAction(event -> {
+        printImageURLToPrinter("https://www.clover.com/assets/images/public-site/press/clover_primary_gray_rgb.png", null);
+      });
+      MenuItem loadingMenuItem = new MenuItem("Loading Printers...");
+
+      SplitMenuButton printImageButton = new SplitMenuButton(defaultPrinter, loadingMenuItem);
+      printImageButton.showingProperty().addListener(new ChangeListener<Boolean>() {
+        @Override public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+          System.out.println("it opened...");
+          if(!oldValue && newValue) {
+
+            cloverConnector.addCloverConnectorListener(new DefaultCloverConnectorListener(cloverConnector) {
+              @Override public void onConfirmPaymentRequest(ConfirmPaymentRequest request) {
+                // do nothing here...
+              }
+
+              @Override public void onRetrievePrintersResponse(RetrievePrintersResponse response) {
+                cloverConnector.removeCloverConnectorListener(this);
+
+                Platform.runLater(new Runnable(){
+                  @Override public void run() {
+                    printImageButton.getItems().remove(loadingMenuItem);
+                    for(Printer p : response.getPrinters()) {
+                      MenuItem mi = new MenuItem(p.getName() + ":" + p.getId());
+                      mi.setOnAction(event -> {
+                        printImageURLToPrinter("https://www.clover.com/assets/images/public-site/press/clover_primary_gray_rgb.png", p.getId());
+                      });
+                      printImageButton.getItems().add(mi);
+                    }
+                  }
+                });
+              }
+            });
+            cloverConnector.retrievePrinters(new RetrievePrintersRequest(null));
+          } else {
+            Platform.runLater(new Runnable(){
+              @Override public void run() {
+                printImageButton.getItems().clear();
+                printImageButton.getItems().add(defaultPrinter);
+                printImageButton.getItems().add(loadingMenuItem);
+
+              }
+            });
+          }
+        }
+      });
+      printImageButton.setText("PRINT IMAGE");
+      printImageButton.setOnAction(event -> {
+        clearLabel();
+        cloverConnector.printImageFromURL("https://www.clover.com/assets/images/public-site/press/clover_primary_gray_rgb.png");
+      });
+
+      controlPane.add(printImageButton, 1, 2);
+      fillJavaFxGrid(printImageButton);
+    }
+
 
     VBox vbox = new VBox();
     vbox.setAlignment(Pos.CENTER);
@@ -704,3 +926,5 @@ public class MiscellaneousTab extends AbstractExampleTab {
     }
   }
 }
+
+

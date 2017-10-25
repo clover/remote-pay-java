@@ -51,6 +51,7 @@ import com.clover.remote.client.messages.MessageFromActivity;
 import com.clover.remote.client.messages.MessageToActivity;
 import com.clover.remote.client.messages.PaymentResponse;
 import com.clover.remote.client.messages.PreAuthResponse;
+import com.clover.remote.client.messages.PrintJobStatusResponse;
 import com.clover.remote.client.messages.PrintManualRefundDeclineReceiptMessage;
 import com.clover.remote.client.messages.PrintManualRefundReceiptMessage;
 import com.clover.remote.client.messages.PrintPaymentDeclineReceiptMessage;
@@ -65,6 +66,7 @@ import com.clover.remote.client.messages.ResultCode;
 import com.clover.remote.client.messages.RetrieveDeviceStatusResponse;
 import com.clover.remote.client.messages.RetrievePaymentResponse;
 import com.clover.remote.client.messages.RetrievePendingPaymentsResponse;
+import com.clover.remote.client.messages.RetrievePrintersResponse;
 import com.clover.remote.client.messages.SaleResponse;
 import com.clover.remote.client.messages.TipAdjustAuthResponse;
 import com.clover.remote.client.messages.VaultCardResponse;
@@ -634,6 +636,12 @@ public class ExamplePOSCloverConnectorListener extends DefaultCloverConnectorLis
         + " Payment: " + response.getPayment()
         + " reason: " + response.getReason(), Toast.LENGTH_LONG);
   }
+
+  @Override public void onPrintJobStatusResponse(PrintJobStatusResponse response) {
+    showMessage(
+        "RetrievePrintersResponse: " + (response.isSuccess()) + " State: " + response.getStatus() + " for print job id: " + response.getPrintRequestId(), 2000);
+  }
+
 
   private void promptForRefundAndVoid(PaymentResponse response) {
     // refund payment?

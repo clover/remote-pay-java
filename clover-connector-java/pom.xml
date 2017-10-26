@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.clover.sdk</groupId>
   <artifactId>remote-pay-java-connector</artifactId>
-  <version>1.4</version>
+  <version>1.4.0</version>
   <packaging>jar</packaging>
   <name>Clover Connector Java library</name>
   <description>Clover Connector Java library</description>

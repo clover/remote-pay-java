@@ -36,7 +36,7 @@ jar {
 defaultTasks 'jar'
 
 dependencies {
-  compile 'com.clover.sdk:remote-pay-java-connector:1.4'
+  compile 'com.clover.sdk:remote-pay-java-connector:1.4.0'
   compile 'org.json:json:20170516'
   compile 'net.straylightlabs:hola:0.2.2'
   compile 'com.google.code.gson:gson:2.3.1'

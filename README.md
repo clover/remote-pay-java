@@ -18,8 +18,8 @@ To work with the project effectively, you will need:
 - To experience transactions end-to-end from the merchant and customer perspectives, we also recommend ordering a [Clover DevKit](http://cloverdevkit.com/collections/devkits/products/clover-mini-dev-kit).
 
 ## Getting started
-* clover-connector-java and clover-connector-java-example-cli require Java 7 or higher.
-* clover-connector-java-example-pos requires Java 8 or higher (uses JavaFX).
+* clover-connector-java requires Java 7 or higher.
+* clover-connector-java-example-pos and clover-connector-java-examples require Java 8 or higher (uses JavaFX).
 * Use `gradle assemble` to build the project from the command line. (Comment out `clover-connector-java-example-pos` in settings.gradle if using Java 7.) You may also import the project into IntelliJ IDEA using the root build.gradle file.
 
 ## Getting connected

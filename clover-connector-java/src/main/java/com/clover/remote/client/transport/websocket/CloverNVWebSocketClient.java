@@ -78,7 +78,9 @@ public class CloverNVWebSocketClient implements WebSocketListener {
     return socket.getState() == WebSocketState.CLOSING;
   }
 
-
+  public boolean isClosed() {
+    return socket.getState() == WebSocketState.CLOSED;
+  }
 
   @Override public void onTextMessage(WebSocket websocket, String text) throws Exception {
     listener.onMessage(this, text);
@@ -137,7 +139,9 @@ public class CloverNVWebSocketClient implements WebSocketListener {
   }
 
   @Override public void onError(WebSocket websocket, WebSocketException cause) throws Exception {
-    Log.e(getClass().getSimpleName(), "Error", cause);
+    if (!isClosing() && !isClosed()) {
+      Log.e(getClass().getSimpleName(), "Error", cause);
+    }
   }
 
   @Override public void onPingFrame(WebSocket websocket, WebSocketFrame frame) throws Exception {
@@ -159,23 +163,33 @@ public class CloverNVWebSocketClient implements WebSocketListener {
   }
 
   @Override public void onFrameError(WebSocket websocket, WebSocketException cause, WebSocketFrame frame) throws Exception {
-    Log.e(getClass().getSimpleName(), String.format("Error in frame, %s", frame), cause);
+    if (!isClosing() && !isClosed()) {
+      Log.e(getClass().getSimpleName(), String.format("Error in frame, %s", frame), cause);
+    }
   }
 
   @Override public void onMessageError(WebSocket websocket, WebSocketException cause, List<WebSocketFrame> frames) throws Exception {
-    Log.e(getClass().getSimpleName(), String.format("Error in message, %s", frames), cause);
+    if (!isClosing() && !isClosed()) {
+      Log.e(getClass().getSimpleName(), String.format("Error in message, %s", frames), cause);
+    }
   }
 
   @Override public void onMessageDecompressionError(WebSocket websocket, WebSocketException cause, byte[] compressed) throws Exception {
-    Log.e(getClass().getSimpleName(), "Error in message decompression", cause);
+    if (!isClosing() && !isClosed()) {
+      Log.e(getClass().getSimpleName(), "Error in message decompression", cause);
+    }
   }
 
   @Override public void onTextMessageError(WebSocket websocket, WebSocketException cause, byte[] data) throws Exception {
-    Log.e(getClass().getSimpleName(), "Error in test message", cause);
+    if (!isClosing() && !isClosed()) {
+      Log.e(getClass().getSimpleName(), "Error in test message", cause);
+    }
   }
 
   @Override public void onSendError(WebSocket websocket, WebSocketException cause, WebSocketFrame frame) throws Exception {
-    Log.e(getClass().getSimpleName(), String.format("Error in send, %s", frame), cause);
+    if (!isClosing() && !isClosed()) {
+      Log.e(getClass().getSimpleName(), String.format("Error in send, %s", frame), cause);
+    }
     listener.onSendError(frame.getPayloadText());
   }
 
@@ -202,7 +216,9 @@ public class CloverNVWebSocketClient implements WebSocketListener {
   }
 
   public void clearListener() {
-    Log.w(getClass().getSimpleName(), "Listener cleared");
+    if (!isClosing() && !isClosed()) {
+      Log.w(getClass().getSimpleName(), "Listener cleared");
+    }
     socket.removeListener(this);
   }
 

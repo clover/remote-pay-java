@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.clover.sdk</groupId>
+  <artifactId>remote-pay-java-connector</artifactId>
+  <version>1.4.0</version>
+  <packaging>jar</packaging>
+  <name>Clover Connector Java library</name>
+  <description>Clover Connector Java library</description>
+  <url>http://www.clover.com/</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Clover Engineering Team</name>
+      <url>https://www.clover.com/team</url>
+    </developer>
+  </developers>
+  <scm>
+    <connection>https://github.com/clover/remote-pay-java.git</connection>
+    <developerConnection>git@github.com:clover/remote-pay-java.git</developerConnection>
+    <url>https://github.com/clover/remote-pay-java</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20170516</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.3.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.neovisionaries</groupId>
+      <artifactId>nv-websocket-client</artifactId>
+      <version>1.31</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

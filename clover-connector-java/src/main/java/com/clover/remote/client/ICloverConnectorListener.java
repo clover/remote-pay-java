@@ -159,7 +159,8 @@ public interface ICloverConnectorListener {
   void onCloseoutResponse(CloseoutResponse response);
 
   /**
-   * Called at the completion of a Sale() request. The SaleResponse contains a ResultCode 
+   * Called at the completion of a Sale() request. The SaleResponse contains a 
+   * {@see com.clover.remote.client.messages.ResultCode} 
    * and a Success boolean. A successful Sale transaction will also have the payment 
    * object, which can be for the full or partial amount of the Sale request. 
    *
@@ -173,164 +174,178 @@ public interface ICloverConnectorListener {
   void onSaleResponse(SaleResponse response);
 
   /**
-   * Called in response to a manual refund request
+   * Called in response to a manualRefund() request. Contains a 
+   * {@see com.clover.remote.client.messages.ResultCode} and 
+   * a Success boolean. If successful, the ManualRefundResponse will have 
+   * a Credit object associated with the relevant Payment information.
    *
-   * @param response The response
+   * @param ManualRefundResponse The response to the transaction request.
    */
   void onManualRefundResponse(ManualRefundResponse response);
 
   /**
-   * Called in response to a refund payment request
+   * Called in response to a RefundPayment() request. Contains a 
+   * {@see com.clover.remote.client.messages.ResultCode} and a Success boolean. 
+   * The response to a successful transaction will contain the Refund. The Refund includes 
+   * the original paymentId as a reference.
    *
-   * @param response The response
+   * @param RefundPaymentResponse The response to the transaction request.
    */
   void onRefundPaymentResponse(RefundPaymentResponse response);
 
   /**
-   * Called when a customer selects a tip amount on the Clover device screen
+   * Called when a customer selects a tip amount on the Clover device's screen.
    *
-   * @param message The message
+   * @param message The TipAddedMessage.
    */
   void onTipAdded(TipAddedMessage message);
 
   /**
-   * Called in response to a void payment request
+   * Called in response to a voidPayment() request. Contains a 
+   * {@see com.clover.remote.client.messages.ResultCode} and a Success boolean. 
+   * If successful, the response will also contain the paymentId for the voided Payment.
    *
-   * @param response The response
+   * @param response The response to the transaction request.
    */
   void onVoidPaymentResponse(VoidPaymentResponse response);
 
   /**
-   * Called when the Clover device is disconnected
+   * Called when the Clover device is disconnected from the CloverConnector or not 
+   * responding.
    */
   void onDeviceDisconnected();
 
   /**
-   * Called when the Clover device is connected, but not ready to communicate
+   * Called when the Clover device is initially connected, but not ready to communicate.
    */
   void onDeviceConnected();
 
   /**
-   * Called when the Clover device is ready to communicate
+   * Called when the Clover device is ready to communicate and respond to requests.
    *
-   * @param merchantInfo The merchant info for the device
+   * @param merchantInfo The merchant information to associate with the device.
    */
   void onDeviceReady(MerchantInfo merchantInfo);
 
   /**
-   * Called in response to a vault card request
+   * Called in response to a vaultCard() request. Contains a 
+   * {@see com.clover.remote.client.messages.ResultCode} and a Success boolean.
+   * If successful, the response will contain a VaultedCard object with a token value 
+   * that's unique for the card and merchant that can be used for future Sale() and Auth() 
+   * requests.
    *
-   * @param response The response
+   * @param response The response to the request.
    */
   void onVaultCardResponse(VaultCardResponse response);
 
-  /**
-   * Called to update the status of a print job
-   *
-   * @param response The response contains the print job identifier and that job's status
+  /** 
+   * Called in response to a retrievePrintJobStatus() request.
+   * 
+   * @param PrintJobStatusResponse The response to the request.
    */
     void onPrintJobStatusResponse(PrintJobStatusResponse response);
 
   /**
-   * Called in response to a retrievePrinters() request
-   *
-   * @param response Response object containing an array of the printers being passed back
+   * Called in response to a retrievePrinters() request.
+   * 
+   * @param RetrievePrintersResponse The response to the request.
    */
   void onRetrievePrintersResponse(RetrievePrintersResponse response);
 
   /**
-   * Will only be called if disablePrinting = true on the Sale, Auth, PreAuth or ManualRefund Request
-   * Called when a user requests to print a receipt for a ManualRefund
+   * Called when a user requests a paper receipt for a Manual Refund. Will only be called 
+   * if disablePrinting = true on the ManualRefund() request.
    *
-   * @param message The message
+   * @param printManualRefundReceiptMessage A callback that asks the POS to print a 
+   * receipt for a ManualRefund. Contains a Credit object.
    */
   void onPrintManualRefundReceipt(PrintManualRefundReceiptMessage message);
 
   /**
-   * Will only be called if disablePrinting = true on the Sale, Auth, PreAuth or ManualRefund Request
-   * Called when a user requests to print a receipt for a declined ManualRefund
+   * Called when a user requests a paper receipt for a declined Manual Refund. Will only 
+   *be called if disablePrinting = true on the ManualRefund() request.
    *
-   * @param message The message
+   * @param message The PrintManualRefundDeclineReceiptMessage.
    */
   void onPrintManualRefundDeclineReceipt(PrintManualRefundDeclineReceiptMessage message);
 
   /**
-   * Will only be called if disablePrinting = true on the Sale, Auth, PreAuth or ManualRefund Request
-   * Called when a user requests to print a receipt for a payment
+   * Called when a user requests a paper receipt for a Payment. Will only be called 
+   * if disablePrinting = true on the Sale(), Auth(), or PreAuth() request.
    *
-   * @param message The message
+   * @param message The message.
    */
   void onPrintPaymentReceipt(PrintPaymentReceiptMessage message);
 
   /**
-   * Will only be called if disablePrinting = true on the Sale, Auth, PreAuth or ManualRefund Request
-   * Called when a user requests to print a receipt for a declined payment
+   * Called when a user requests a paper receipt for a declined Payment. Will only be 
+   * called if disablePrinting = true on the Sale(), Auth(), or PreAuth() request.
    *
-   * @param message The message
+   * @param message The message.
    */
   void onPrintPaymentDeclineReceipt(PrintPaymentDeclineReceiptMessage message);
 
   /**
-   * Will only be called if disablePrinting = true on the Sale, Auth, PreAuth or ManualRefund Request
-   * Called when a user requests to print a merchant copy of a payment receipt
+   * Called when a user requests a merchant copy of a Payment receipt. Will only be called 
+   * if disablePrinting = true on the Sale(), Auth(), or PreAuth() request.
    *
-   * @param message The message
+   * @param message The message.
    */
   void onPrintPaymentMerchantCopyReceipt(PrintPaymentMerchantCopyReceiptMessage message);
 
   /**
-   * Will only be called if disablePrinting = true on the Sale, Auth, PreAuth or ManualRefund Request
-   * Called when a user requests to print a receipt for a payment refund
+   * Called when a user requests a paper receipt for a Payment Refund. Will only be called 
+   * if disablePrinting = true on the Sale(), Auth(), PreAuth() or ManualRefund() request.
    *
-   * @param message The message
+   * @param message The message.
    */
   void onPrintRefundPaymentReceipt(PrintRefundPaymentReceiptMessage message);
 
   /**
-   * Called in response to a retrievePendingPayment(...) request.
+   * Called in response to a retrievePendingPayment() request.
    *
-   * @param response The response
+   * @param retrievePendingPaymentResponse The response to the request.
    */
   void onRetrievePendingPaymentsResponse(RetrievePendingPaymentsResponse response);
 
   /**
-   * Called in response to a readCardData(...) request.
+   * Called in response to a readCardData() request.
    *
-   * @param response The response
+   * @param response The response to the request.
    */
   void onReadCardDataResponse(ReadCardDataResponse response);
 
   /**
-   * Called when a message is sent from a custom activity
-   * @param message The message
+   * Called when a Custom Activity sends a message to the POS.
+   * @param message The message.
    */
   void onMessageFromActivity(MessageFromActivity message);
 
   /**
-   * Called when a custom activity finishes
+   * Called when a Custom Activity finishes normally.
    *
-   * @param response The response
+   * @param response The CustomActivityResponse.
    */
   void onCustomActivityResponse(CustomActivityResponse response);
 
   /**
-   * Called in response to a RetrieveDeviceState request
+   * Called in response to a RetrieveDeviceStatus() request.
    *
-   * @param response The response
+   * @param response The response to the request.
    */
   void onRetrieveDeviceStatusResponse(RetrieveDeviceStatusResponse response);
 
   /**
-   * Called in response to a ResetDevice request
+   * Called in response to a ResetDevice() request.
    *
-   * @param response The response
+   * @param response The response to the request.
    */
   void onResetDeviceResponse(ResetDeviceResponse response);
 
   /**
-   * Called in response to a RetrievePaymentRequest
+   * Called in response to a RetrievePayment() request.
    *
-   * @param response The response
+   * @param response The response to the request.
    */
   void onRetrievePaymentResponse(RetrievePaymentResponse response);
 

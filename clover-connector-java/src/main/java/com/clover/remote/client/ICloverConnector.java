@@ -74,7 +74,7 @@ public interface ICloverConnector extends Serializable {
   void removeCloverConnectorListener(ICloverConnectorListener listener);
 
   /**
-   * Requests a Sale transaction (i.e., purchase).
+   * Requests a Sale transaction (purchase).
    *
    * @param request A SaleRequest object containing basic information for the transaction.
    */
@@ -119,8 +119,7 @@ public interface ICloverConnector extends Serializable {
 
   /**
    * Requests an Auth transaction. The tip for an Auth can be adjusted through the 
-   * TipAdjustAuth() call 
-   * until the batch Closeout is processed.
+   * TipAdjustAuth() call until the batch Closeout is processed.
    *
    * <p>
    * <b>Note:</b> The MerchantInfo.SupportsAuths boolean must be set to true.
@@ -182,9 +181,10 @@ public interface ICloverConnector extends Serializable {
   void refundPayment(RefundPaymentRequest request);
 
   /**
-   * Manual refund method, aka "naked credit"
+   * Initiates a Manual Refund transaction (a “Refund” or credit that is not associated 
+   * with a previous Payment).
    *
-   * @param request The request details
+   * @param request A ManualRefundRequest object with the request details.
    */
   void manualRefund(ManualRefundRequest request);
 
@@ -241,9 +241,10 @@ public interface ICloverConnector extends Serializable {
   void retrievePrintJobStatus(PrintJobStatusRequest request);
 
   /**
-   * Request that the cash drawer connected to the device be opened.
+   * Opens the first cash drawer found connected to the Clover device. The reason for 
+   * opening the cash drawer must be set on OpenCashDrawerRequest.
    *
-   * @param request object defining the reason the cash drawer is being opened, and an optional device identifier
+   * @param OpenCashDrawerRequest
    */
   void openCashDrawer(OpenCashDrawerRequest request);
 
@@ -252,7 +253,7 @@ public interface ICloverConnector extends Serializable {
    *
    * @param messages An array of text messages to print.
    *
-   * @deprecated Use {@link #print()} instead.
+   * @deprecated Use {@link #print(PrintRequest request)} instead.
    */
   @Deprecated
   void printText(List<String> messages);
@@ -262,7 +263,7 @@ public interface ICloverConnector extends Serializable {
    *
    * @param image The image to print.
    *
-   * @deprecated Use {@link #print()} instead.
+   * @deprecated Use {@link #print(PrintRequest request)} instead.
    */
   @Deprecated
   void printImage(Bitmap image);
@@ -273,7 +274,7 @@ public interface ICloverConnector extends Serializable {
    *
    * @param url The URL for the image to print.
    * 
-   * @deprecated Use {@link #print()} instead.
+   * @deprecated Use {@link #print(PrintRequest request)} instead.
    */
   @Deprecated
   void printImageFromURL(String url);
@@ -302,15 +303,16 @@ public interface ICloverConnector extends Serializable {
    * @param paymentId The ID of the Payment associated with the receipt.
    * @param orderId The ID of the Order associated with the receipt.
    */ 
+   @Deprecated
   void displayPaymentReceiptOptions(String orderId, String paymentId);
-
+  
   /**
-   * Opens the first cash drawer found connected to the Clover device. The reason for 
-   * opening the cash drawer must be set on OpenCashDrawerRequest.
+   * Displays the customer-facing payment receipt options (print, email, etc.) for a 
+   * Payment on the Clover device.
    *
-   * @param OpenCashDrawerRequest
-   */
-  void openCashDrawer(String reason);
+   * @param DisplayReceiptOptionsRequest The request.
+   */ 
+  void displayPaymentReceiptOptions(DisplayReceiptOptionsRequest request);
 
   /**
    * Displays an Order and its lineItems on the Clover device. Will replace an Order 
@@ -397,60 +399,4 @@ public interface ICloverConnector extends Serializable {
    */
   void retrievePayment(RetrievePaymentRequest request);
   
-  /**
-   * Shows the customer-facing receipt option screen for the specified Payment.
-   * 
-   * @deprecated Use {@link #displayPaymentReceiptOptions()} instead.
-   */
-   @Deprecated
-  void showPaymentReceiptOptions(orderId, paymentId);
-  
-  /**
-   * Notifies the Clover device that a Discount is being applied to an Order. The device 
-   * will then reflect the Discount in the displayOrder.
-   *
-   * <p>
-   * <b>Note:</b> This is independent of a Discount applied to a lineItem.
-   * 
-   * @param discount The Discount being applied.
-   * @param order The Order the Discount should be applied to.
-   */
-  void discountAddedToDisplayOrder(discount, order);
-  
-  /**
-   * Notifies the Clover device that a Discount is being removed from an Order. The device 
-   * will then reflect the removal of the Discount in the displayOrder.
-   *
-   * <p>
-   * <b>Note:</b> This is independent of a Discount removed from a lineItem.
-   * 
-   * @param discount The Discount being removed.
-   * @param order The Order the Discount is being removed from.
-   */
-  void discountRemovedFromDisplayOrder(discount, order);  
-
-  /**
-   * Notifies the Clover device that a lineItem is being added to an Order. The device 
-   * will then reflect the lineItem in the displayOrder.
-   *
-   * <p>
-   * <b>Note:</b> This is independent of a lineItem added to a displayLineItem.
-   * 
-   * @param lineItem The lineItem being added.
-   * @param {order.DisplayOrder} order The Order the lineItem is being added to.
-   */
-  void lineItemAddedToDisplayOrder(lineItem, order);
-  
-  /**
-   * Notifies the Clover device of a lineItem being removed from an Order. The Clover 
-   * device will then reflect the lineItem removal in the displayOrder.
-   *
-   * <p>
-   * <b>Note:</b> This is independent of a lineItem being removed from a displayLineItem.
-   * 
-   * @param lineItem The lineItem being removed.
-   * @param {order.DisplayOrder} order The Order the lineItem is being removed from.
-   */
-  void lineItemRemovedFromDisplayOrder(lineItem, order);
-
 }

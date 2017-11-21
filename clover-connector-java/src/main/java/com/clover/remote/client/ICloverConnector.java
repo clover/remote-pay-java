@@ -251,6 +251,14 @@ public interface ICloverConnector extends Serializable {
    * the cash drawer is being opened, and an optional device identifier.
    */
   void openCashDrawer(OpenCashDrawerRequest request);
+  
+  /**
+   * Opens the first cash drawer found connected to the Clover device.
+   *
+   * @param reason The reason for opening the cash drawer.
+   */
+   @Deprecated
+  void openCashDrawer(String reason);
 
   /**
    * Prints custom messages in plain text through the Clover Mini's built-in printer.

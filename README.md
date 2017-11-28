@@ -24,7 +24,7 @@ To work with the project effectively, you will need:
 
 ## Getting connected
 1. Make sure your Clover DevKit and Java Example App are on the same network submask and have ports unblocked.
-2. Install the Secure Network Pay Display app on the Clover device.
+2. Install the Secure Network Pay Display app on the Clover device. **NOTE:** The Secure Network Pay Display app is currently in Beta. If you're interested in using a local network connection, please contact Clover's Developer Relations team at [semi-integrations@clover.com](mailto:semi-integrations@clover.com). 
 3. Start the Secure Network Pay Display app. This will also install the Pay Display app if it's not already present on the device.
 4. Start clover-connector-java-example-pos (`com.clover.remote.client.lib.example.ExamplePOS` main class) and enter the address as displayed on the Clover device.
 

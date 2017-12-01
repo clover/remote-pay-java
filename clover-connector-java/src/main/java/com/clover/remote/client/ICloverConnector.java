@@ -46,7 +46,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Interface to define the available methods to send requests to a connected Clover device.
+ * CloverConnector is the interface for sending requests to a connected Clover device. 
+ * This document define the available methods.
  */
 @SuppressWarnings("unused")
 public interface ICloverConnector extends Serializable {
@@ -74,7 +75,7 @@ public interface ICloverConnector extends Serializable {
   void removeCloverConnectorListener(ICloverConnectorListener listener);
 
   /**
-   * Requests a Sale transaction (i.e. purchase).
+   * Requests a Sale transaction (purchase).
    *
    * @param request A SaleRequest object containing basic information for the transaction.
    */
@@ -304,7 +305,7 @@ public interface ICloverConnector extends Serializable {
   void showWelcomeScreen();
 
   /**
-   * Displays the "Thank you" screen on the Clover device.
+   * Displays the thank you screen on the Clover device.
    */
   void showThankYouScreen();
 
@@ -349,10 +350,9 @@ public interface ICloverConnector extends Serializable {
   void dispose();
 
   /**
-   * Sends a keystroke to the Clover device that invokes an input option (e.g. OK, CANCEL, 
-   * DONE, etc.) 
-   * on the customer's behalf. InputOptions are on the CloverDeviceEvent passed to 
-   * onDeviceActivityStart().
+   * Sends a keystroke to the Clover device that invokes an input option (OK, CANCEL, 
+   * DONE, etc.) on the customer's behalf. InputOptions are on the CloverDeviceEvent 
+   * passed to onDeviceActivityStart().
    *
    * @param io The input option to invoke.
    */

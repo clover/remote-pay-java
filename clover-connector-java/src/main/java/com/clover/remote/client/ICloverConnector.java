@@ -47,7 +47,7 @@ import java.util.List;
 
 /**
  * CloverConnector is the interface for sending requests to a connected Clover device. 
- * This document define the available methods.
+ * This document defines the available methods.
  */
 @SuppressWarnings("unused")
 public interface ICloverConnector extends Serializable {

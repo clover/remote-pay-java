@@ -24,13 +24,14 @@ To work with the project effectively, you will need:
 
 ## Getting connected
 1. Make sure your Clover DevKit and Java Example App are on the same network submask and have ports unblocked.
-2. Install the Secure Network Pay Display app on the Clover device.
+2. Install the [Secure Network Pay Display app](https://docs.clover.com/build/secure-network-pay-display/) on the Clover device.
 3. Start the Secure Network Pay Display app. This will also install the Pay Display app if it's not already present on the device.
 4. Start clover-connector-java-example-pos (`com.clover.remote.client.lib.example.ExamplePOS` main class) and enter the address as displayed on the Clover device.
 
 ## Additional resources
 
 * [Release Notes](https://github.com/clover/remote-pay-java/releases)
+* [Secure Network Pay Display app](https://docs.clover.com/build/secure-network-pay-display/)
 * [API Documentation](http://clover.github.io/remote-pay-java/1.4.0/docs/index.html)
 * [Clover Developer Community](https://community.clover.com/index.html)
 

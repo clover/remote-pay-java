@@ -16,7 +16,7 @@
 package com.clover.remote.client.lib.example;
 
 import android.os.AsyncTask;
-import com.clover.remote.client.CloverConnector;
+import com.clover.remote.client.CloverConnectorFactory;
 import com.clover.remote.client.ICloverConnector;
 import com.clover.remote.client.WebSocketCloverDeviceConfiguration;
 import com.clover.remote.client.lib.example.model.OrderObserver;
@@ -29,6 +29,7 @@ import com.clover.remote.client.lib.example.model.POSPayment;
 import com.clover.remote.client.lib.example.model.POSRefund;
 import com.clover.remote.client.lib.example.model.POSStore;
 import com.clover.remote.client.lib.example.utils.CurrencyUtils;
+import com.clover.remote.client.lib.example.utils.SecurityUtils;
 import com.clover.remote.client.messages.CloverDeviceEvent;
 import com.clover.remote.order.DisplayLineItem;
 import com.clover.remote.order.DisplayOrder;
@@ -65,7 +66,6 @@ import net.straylightlabs.hola.sd.Query;
 import net.straylightlabs.hola.sd.Service;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.URI;
@@ -324,7 +324,7 @@ public class ExamplePOS extends Application {
               Preferences preferences = Preferences.userNodeForPackage(ExamplePOS.class);
               preferences.put("LAST_DEVICE", new Gson().toJson(device).toString());
 
-              KeyStore trustStore = createTrustStore();
+              KeyStore trustStore = SecurityUtils.createTrustStore(false);
               String authToken = pairCheckbox.isSelected() ? null : Preferences.userNodeForPackage(ExamplePOS.class).get("AUTH_TOKEN", null);
               WebSocketCloverDeviceConfiguration deviceConfiguration = new WebSocketCloverDeviceConfiguration(endpoint, "com.cloverconnector.java.pos:1.1.0", trustStore, "Clover Example POS Java", "Lane4", authToken){
                 @Override public void onPairingCode(final String pairingCode) {
@@ -335,7 +335,7 @@ public class ExamplePOS extends Application {
                   Preferences.userNodeForPackage(ExamplePOS.class).put("AUTH_TOKEN", authToken);
                 }
               };
-              cloverConnector = new CloverConnector(deviceConfiguration);
+              cloverConnector = CloverConnectorFactory.createICloverConnector(deviceConfiguration);
               baseListener = new ExamplePOSCloverConnectorListener(cloverConnector, store, connectionStatusLabel, responseLabel, deviceActivityLabel, glassPane, sigGlassPane);
               cloverConnector.addCloverConnectorListener(baseListener);
               cloverConnector.initializeConnection();
@@ -346,25 +346,6 @@ public class ExamplePOS extends Application {
             } catch (Exception e) {
               e.printStackTrace();
             }
-          }
-
-          private KeyStore createTrustStore() {
-            try {
-
-//              String STORETYPE = "JKS";
-              String STORETYPE = "PKCS12";
-              KeyStore trustStore = KeyStore.getInstance( STORETYPE );
-              InputStream trustStoreStream = getClass().getResourceAsStream("/certs/clover_cacerts.p12");
-//              InputStream trustStoreStream = getClass().getResourceAsStream("/certs/clover_cacerts.jks");
-              String TRUST_STORE_PASSWORD = "clover";
-
-              trustStore.load( trustStoreStream, TRUST_STORE_PASSWORD.toCharArray() );
-
-              return trustStore;
-            } catch(Throwable t) {
-              return null;
-            }
-
           }
         });
 

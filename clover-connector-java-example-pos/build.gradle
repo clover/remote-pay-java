@@ -20,6 +20,9 @@ repositories {
   mavenLocal()
   mavenCentral()
   jcenter()
+  flatDir {
+    dirs '../lib'
+  }
 }
 
 jar {
@@ -36,7 +39,7 @@ jar {
 defaultTasks 'jar'
 
 dependencies {
-  compile 'com.clover.sdk:remote-pay-java-connector:1.4.0'
+  compile project(':clover-connector-java')
   compile 'org.json:json:20170516'
   compile 'net.straylightlabs:hola:0.2.2'
   compile 'com.google.code.gson:gson:2.3.1'

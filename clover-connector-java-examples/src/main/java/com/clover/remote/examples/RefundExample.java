@@ -17,7 +17,7 @@
 package com.clover.remote.examples;
 
 import com.clover.remote.Challenge;
-import com.clover.remote.client.CloverConnector;
+import com.clover.remote.client.CloverConnectorFactory;
 import com.clover.remote.client.DefaultCloverConnectorListener;
 import com.clover.remote.client.ICloverConnector;
 import com.clover.remote.client.MerchantInfo;
@@ -71,7 +71,7 @@ public class RefundExample {
 
   public static void main(String[] args) {
     // NOTE:  Replace the hard-coded IP address with the correct address from your device
-    cloverConnector = new CloverConnector(SampleUtils.getNetworkConfiguration("192.168.0.126"));
+    cloverConnector = CloverConnectorFactory.createICloverConnector(SampleUtils.getNetworkConfiguration("10.249.254.159"));
 
     cloverConnector.addCloverConnectorListener(new DefaultCloverConnectorListener(cloverConnector) {
       @Override

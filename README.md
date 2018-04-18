@@ -4,7 +4,7 @@
 # Clover Connector for Java POS integration
 
 ## Version
-Current version: 1.4.0
+Current version: 1.4.1
 
 ## Overview
 
@@ -32,7 +32,7 @@ To work with the project effectively, you will need:
 
 * [Release Notes](https://github.com/clover/remote-pay-java/releases)
 * [Secure Network Pay Display](https://docs.clover.com/build/secure-network-pay-display/)
-* [API Documentation](http://clover.github.io/remote-pay-java/1.4.0/docs/index.html)
+* [API Documentation](http://clover.github.io/remote-pay-java/1.4.1/docs/index.html)
 * [Clover Developer Community](https://community.clover.com/index.html)
 
 

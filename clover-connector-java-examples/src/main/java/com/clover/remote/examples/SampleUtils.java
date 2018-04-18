@@ -23,12 +23,14 @@ import java.io.InputStream;
 import java.net.URI;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 
 public class SampleUtils {
   private static final SecureRandom random = new SecureRandom();
   private static final char[] vals = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}; // Crockford's base 32 chars
 
-  private static final String APP_ID = "com.cloverconnector.java.simple.sample:1.4.0";
+  private static final String APP_ID = "com.cloverconnector.java.simple.sample:1.4.1";
   private static final String POS_NAME = "Clover Simple Sample Java";
   private static final String DEVICE_NAME = "Clover Device";
 
@@ -54,10 +56,7 @@ public class SampleUtils {
     Integer dvcPort = port != null ? port : Integer.valueOf(12345);
     try {
       URI endpoint = new URI("wss://" + ip + ":" + dvcPort + "/remote_pay");
-      KeyStore trustStore  = KeyStore.getInstance("PKCS12");
-      InputStream trustStoreStream = CloverDeviceConfiguration.class.getResourceAsStream("/certs/clover_cacerts.p12");
-      String TRUST_STORE_PASSWORD = "clover";
-      trustStore.load(trustStoreStream, TRUST_STORE_PASSWORD.toCharArray());
+      KeyStore trustStore  = createTrustStore();
 
       // For WebSocket configuration, we must handle the device pairing via callback
       return new WebSocketCloverDeviceConfiguration(endpoint, APP_ID, trustStore, POS_NAME, DEVICE_NAME, null) {
@@ -76,5 +75,52 @@ public class SampleUtils {
     }
     System.err.println("Error creating CloverDeviceConfiguration");
     return null;
+  }
+
+  private static KeyStore createTrustStore() {
+    try {
+      String storeType = KeyStore.getDefaultType();
+      KeyStore trustStore = KeyStore.getInstance(storeType);
+      char[] TRUST_STORE_PASSWORD = "clover".toCharArray();
+      trustStore.load(null, TRUST_STORE_PASSWORD);
+
+      // Load the old "dev" cert.  This should be valid for all target environments (dev, stg, sandbox, prod).
+      Certificate cert = loadCertificateFromResource("/certs/device_ca_certificate.crt");
+      trustStore.setCertificateEntry("dev", cert);
+
+      // Now load the environment specific cert (e.g. prod).  Always retrieving this cert from prod as it is really
+      // only valid in prod at this point, and we also don't have a mechanism within the SDK of specifying the target
+      // environment.
+      cert = loadCertificateFromResource("/certs/env_device_ca_certificate.crt");
+      trustStore.setCertificateEntry("prod", cert);
+
+      return trustStore;
+    } catch(Throwable t) {
+      t.printStackTrace();
+    }
+    return null;
+  }
+
+  private static Certificate loadCertificateFromResource(String name) {
+    System.out.println("Loading cert:  " + name);
+
+    InputStream is = null;
+    try {
+      is = SampleUtils.class.getResourceAsStream(name);
+
+      CertificateFactory cf = CertificateFactory.getInstance("X.509");
+      return cf.generateCertificate(is);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      return null;
+    } finally {
+      if (is != null) {
+        try {
+          is.close();
+        } catch (Exception ex) {
+          // NO-OP
+        }
+      }
+    }
   }
 }

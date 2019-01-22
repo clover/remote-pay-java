@@ -22,7 +22,7 @@ import com.clover.common2.payments.PayIntent;
  * Request object for requesting a pre-auth transaction.
  */
 @SuppressWarnings(value="unused")
-public class PreAuthRequest extends TransactionRequest {
+public class PreAuthRequest extends BaseTransactionRequest {
 
   /**
    * Constructor

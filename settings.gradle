@@ -1,3 +1,1 @@
 include 'clover-connector-java'
-include 'clover-connector-java-example-pos'
-include 'clover-connector-java-examples'

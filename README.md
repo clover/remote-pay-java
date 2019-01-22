@@ -4,13 +4,13 @@
 # Clover Connector for Java POS integration
 
 ## Version
-Current version: 1.4.1
+Current version: 3.0.0
 
 ## Overview
 
 This SDK allows your Java-based point-of-sale (POS) system to communicate with a [Clover® payment device](https://www.clover.com/pos-hardware/) and process payment transactions. Learn more about [Clover integrations](https://www.clover.com/integrations).
 
-The Java project includes a class library (clover-connector-java) and several examples. One example uses the command line, and another is a PoS application that uses JavaFX. There are also several "getting started" examples. 
+The Java project includes a class library (clover-connector-java). Examples can be found in http://github.com/clover/remote-pay-java-examples. One example uses the command line, and another is a PoS application that uses JavaFX. There are also several "getting started" examples. 
 
 To work with the project effectively, you will need:
 - [Gradle](https://gradle.org) (suggested version: 3.4).
@@ -32,7 +32,7 @@ To work with the project effectively, you will need:
 
 * [Release Notes](https://github.com/clover/remote-pay-java/releases)
 * [Secure Network Pay Display](https://docs.clover.com/build/secure-network-pay-display/)
-* [API Documentation](http://clover.github.io/remote-pay-java/1.4.1/docs/index.html)
+* [API Documentation](http://clover.github.io/remote-pay-java/3.0.0/docs/index.html)
 * [Clover Developer Community](https://community.clover.com/index.html)
 
 

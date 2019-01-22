@@ -21,6 +21,8 @@ import com.clover.remote.Challenge;
 import com.clover.remote.KeyPress;
 import com.clover.remote.client.transport.ICloverTransport;
 import com.clover.remote.order.DisplayOrder;
+import com.clover.sdk.v3.customers.CustomerInfo;
+import com.clover.sdk.v3.loyalty.LoyaltyDataConfig;
 import com.clover.sdk.v3.order.Order;
 import com.clover.sdk.v3.order.VoidReason;
 import com.clover.sdk.v3.payments.Payment;
@@ -29,6 +31,7 @@ import com.clover.sdk.v3.printer.PrintCategory;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -39,6 +42,7 @@ public abstract class CloverDevice {
   protected final String packageName;
   private final String applicationId;
   private boolean supportsAcks;
+  private boolean supportsVoidPaymentResponse;
 
   public CloverDevice(String packageName, ICloverTransport transport, String applicationId) {
     this.transport = transport;
@@ -66,6 +70,14 @@ public abstract class CloverDevice {
     return this.supportsAcks;
   }
 
+  public void setSupportsVoidPaymentResponse(boolean supportsVoidPaymentResponse) {
+    this.supportsVoidPaymentResponse = supportsVoidPaymentResponse;
+  }
+
+  protected boolean supportsVoidPaymentResponse() {
+    return this.supportsVoidPaymentResponse;
+  }
+
   public void initializeConnection() {
     transport.initializeConnection();
   }
@@ -90,6 +102,8 @@ public abstract class CloverDevice {
 
   public abstract void doVoidPayment(Payment payment, VoidReason reason, boolean disablePrinting, boolean disableReceiptSelection);
 
+  public abstract void doVoidPaymentRefund(String orderId, String refundId, boolean disablePrinting, boolean disableReceiptSelection);
+
   public abstract void doCaptureAuth(String paymentID, long amount, long tipAmount);
 
   public abstract void doOrderUpdate(DisplayOrder order, Object orderOperation);
@@ -109,6 +123,8 @@ public abstract class CloverDevice {
   public abstract void doShowWelcomeScreen();
 
   public abstract void doShowPaymentReceiptScreen(String orderId, String paymentId, boolean disablePrinting);
+
+  public abstract void doShowReceiptScreen(String orderId, String paymentId, String refundId, String creditId, boolean disablePrinting);
 
   public abstract void doShowThankYouScreen();
 
@@ -145,4 +161,8 @@ public abstract class CloverDevice {
   public abstract void doRetrieveDeviceStatus(boolean sendLastResponse);
 
   public abstract void doRetrievePayment(String externalPaymentId);
+
+  public abstract void doRegisterForCustomerProvidedData(ArrayList<LoyaltyDataConfig> configurations);
+
+  public abstract void doSetCustomerInfo(CustomerInfo customerInfo);
 }

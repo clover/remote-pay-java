@@ -22,29 +22,29 @@ import com.clover.remote.client.messages.AuthRequest;
 import com.clover.remote.client.messages.CapturePreAuthRequest;
 import com.clover.remote.client.messages.CloseoutRequest;
 import com.clover.remote.client.messages.CustomActivityRequest;
-import com.clover.remote.client.messages.OpenCashDrawerRequest;
-import com.clover.remote.client.messages.PrintJobStatusRequest;
-import com.clover.remote.client.messages.PrintRequest;
 import com.clover.remote.client.messages.DisplayReceiptOptionsRequest;
-import com.clover.remote.client.messages.RetrievePaymentRequest;
 import com.clover.remote.client.messages.ManualRefundRequest;
 import com.clover.remote.client.messages.MessageToActivity;
+import com.clover.remote.client.messages.OpenCashDrawerRequest;
 import com.clover.remote.client.messages.PreAuthRequest;
+import com.clover.remote.client.messages.PrintJobStatusRequest;
+import com.clover.remote.client.messages.PrintRequest;
 import com.clover.remote.client.messages.ReadCardDataRequest;
 import com.clover.remote.client.messages.RefundPaymentRequest;
+import com.clover.remote.client.messages.RegisterForCustomerProvidedDataRequest;
 import com.clover.remote.client.messages.RetrieveDeviceStatusRequest;
+import com.clover.remote.client.messages.RetrievePaymentRequest;
 import com.clover.remote.client.messages.RetrievePrintersRequest;
 import com.clover.remote.client.messages.SaleRequest;
+import com.clover.remote.client.messages.SetCustomerInfoRequest;
 import com.clover.remote.client.messages.TipAdjustAuthRequest;
 import com.clover.remote.client.messages.VerifySignatureRequest;
+import com.clover.remote.client.messages.VoidPaymentRefundRequest;
 import com.clover.remote.client.messages.VoidPaymentRequest;
 import com.clover.remote.order.DisplayOrder;
 import com.clover.sdk.v3.payments.Payment;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Interface to define the available methods to send requests to a connected Clover device.
@@ -166,10 +166,6 @@ public interface ICloverConnector extends Serializable {
    */
   void vaultCard(Integer cardEntryMethods);
 
-  /**
-   * Cancels the current user action on the device.
-   */
-  void cancel();
 
   /**
    * Request a closeout of all orders.
@@ -207,30 +203,6 @@ public interface ICloverConnector extends Serializable {
   void openCashDrawer(OpenCashDrawerRequest request);
 
   /**
-   * Print simple lines of text to the Clover Mini printer
-   *
-   * @param messages A list of text to print
-   */
-  void printText(List<String> messages);
-
-  /**
-   * Print an image on the Clover Mini printer
-   *
-   * @param image An image to print
-   *
-   * NOTE:  This method is not implemented for the Java SDK.  Use {@link #printImageFromURL(String)} instead.
-   */
-  @Deprecated
-  void printImage(Bitmap image);
-
-  /**
-   * Print an image on the Clover Mini printer
-   *
-   * @param url The url of an image to print
-   */
-  void printImageFromURL(String url);
-
-  /**
    * Show a message on the Clover Mini screen
    *
    * @param message The message to display
@@ -256,14 +228,6 @@ public interface ICloverConnector extends Serializable {
    */
   void showThankYouScreen();
 
-  /**
-   * Display the payment receipt screen for the orderId/paymentId combination.
-   *
-   * @param paymentId The ID of the payment to print a receipt for
-   * @param orderId The ID of the order to print a receipt for
-   */
-  @Deprecated
-  void displayPaymentReceiptOptions(String orderId, String paymentId);
 
   /**
    * Display the payment receipt screen for the orderId/paymentId combination
@@ -271,14 +235,8 @@ public interface ICloverConnector extends Serializable {
    *
    * @param request The request details
    */
+  @Deprecated
   void displayPaymentReceiptOptions(DisplayReceiptOptionsRequest request);
-
-  /**
-   * Will trigger cash drawer to open that is connected to Clover Mini
-   *
-   * @param reason Reason for opening the cash drawer
-   */
-  void openCashDrawer(String reason);
 
   /**
    * Show the DisplayOrder on the device. Replaces the existing DisplayOrder on the device.
@@ -355,5 +313,28 @@ public interface ICloverConnector extends Serializable {
    */
   void retrievePayment(RetrievePaymentRequest request);
 
+  /**
+   * Refund a specific payment
+   *
+   * @param request The request details
+   */
+  void voidPaymentRefund(VoidPaymentRefundRequest request);
 
+  /**
+   * Display receipt options for a Credit, Refund, or Payment
+   * @param request The request details
+   */
+  void displayReceiptOptions(DisplayReceiptOptionsRequest request);
+
+
+  /**
+   * Register an interest in receiving customer provided data.
+   */
+  void registerForCustomerProvidedData(RegisterForCustomerProvidedDataRequest request);
+
+  /**
+   *
+   * @param request
+   */
+  void setCustomerInfo(SetCustomerInfoRequest request);
 }

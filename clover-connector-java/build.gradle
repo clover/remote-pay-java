@@ -12,6 +12,7 @@ if (!JavaVersion.current().java7Compatible) {
 repositories {
   mavenLocal()
   mavenCentral()
+  google()
   jcenter()
   flatDir {
     dirs '../lib'
@@ -30,8 +31,9 @@ sourceSets {
 }
 
 dependencies {
-  compile(name: 'clover-remote-interface-217', ext: 'jar')
-  compile(name: 'clover-android-sdk-190', ext: 'jar')
+  compile(name: 'clover-remote-interface-246', ext: 'jar')
+  compile(name: 'clover-android-sdk-218', ext: 'jar')
+  compile(name: 'clover-android-loyalty-kit-218', ext: 'jar')
   compile 'org.json:json:20170516'
   compile 'com.google.code.gson:gson:2.3.1'
   compile 'com.neovisionaries:nv-websocket-client:1.31'
